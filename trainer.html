@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English Literary Devices Trainer</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --panel-2:#1f2937;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --accent:#38bdf8;
+      --accent-dark:#0ea5e9;
+      --border:#334155;
+      --correct:#22c55e;
+      --wrong:#ef4444;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px;
+    }
+
+    h1,h2,h3{margin-top:0}
+
+    .screen{display:none}
+    .screen.active{display:block}
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:20px;
+      margin-bottom:20px;
+    }
+
+    .hero{
+      background:linear-gradient(135deg, #0f172a, #1d4ed8 180%);
+    }
+
+    .menu-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:16px;
+    }
+
+    .menu-card{
+      cursor:pointer;
+      transition:0.2s;
+      min-height:180px;
+    }
+
+    .menu-card:hover{
+      transform:translateY(-3px);
+      border-color:var(--accent);
+    }
+
+    .btn{
+      background:var(--accent);
+      color:#06263a;
+      border:none;
+      padding:12px 18px;
+      border-radius:10px;
+      font-weight:700;
+      cursor:pointer;
+      margin:4px;
+    }
+
+    .btn:hover{background:var(--accent-dark)}
+
+    .btn.secondary{
+      background:#1e293b;
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .search{
+      width:100%;
+      max-width:340px;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#0b1220;
+      color:var(--text);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+
+    th,td{
+      padding:12px;
+      border-bottom:1px solid #243244;
+      text-align:left;
+      vertical-align:top;
+      line-height:1.5;
+    }
+
+    th{
+      color:#bae6fd;
+    }
+
+    .muted{color:var(--muted)}
+
+    .sentence-box{
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:18px;
+      font-size:1.1rem;
+      line-height:1.7;
+      margin:16px 0;
+    }
+
+    .options{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+
+    .option{
+      background:var(--panel-2);
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      text-align:left;
+      cursor:pointer;
+      font-size:1rem;
+    }
+
+    .option:hover{
+      border-color:var(--accent);
+    }
+
+    .option.correct{
+      background:rgba(34,197,94,.18);
+      border-color:var(--correct);
+    }
+
+    .option.wrong{
+      background:rgba(239,68,68,.18);
+      border-color:var(--wrong);
+    }
+
+    .feedback{
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      margin-top:16px;
+      line-height:1.6;
+    }
+
+    .progress-wrap{
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:999px;
+      height:12px;
+      overflow:hidden;
+      margin:12px 0 20px;
+    }
+
+    .progress-bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--accent), var(--correct));
+    }
+
+    .two-col{
+      display:grid;
+      grid-template-columns:1.4fr .8fr;
+      gap:18px;
+    }
+
+    .text-box{
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:18px;
+      line-height:2;
+      min-height:260px;
+    }
+
+    .frag{
+      padding:1px 3px;
+      border-radius:6px;
+      cursor:pointer;
+    }
+
+    .palette{
+      display:grid;
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .palette-item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px;
+      border-radius:10px;
+      background:#0b1220;
+      border:1px solid var(--border);
+      cursor:pointer;
+    }
+
+    .palette-item.active{
+      border-color:#fff;
+    }
+
+    .swatch{
+      width:16px;
+      height:16px;
+      border-radius:4px;
+      flex:0 0 16px;
+    }
+
+    .mark-correct{
+      background:rgba(34,197,94,.25) !important;
+    }
+
+    .mark-wrong{
+      background:rgba(239,68,68,.25) !important;
+    }
+
+    .review-item{
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      margin-top:10px;
+      line-height:1.5;
+    }
+
+    @media (max-width: 850px){
+      .options{grid-template-columns:1fr}
+      .two-col{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div>
+        <h1>English Literary Devices Trainer</h1>
+        <div class="muted">Overview · Quiz · Application</div>
+      </div>
+    </div>
+
+    <!-- HOME -->
+    <section id="home" class="screen active">
+      <div class="card hero">
+        <h2>Abitur Practice in English</h2>
+        <p>
+          This website helps students revise important literary devices for the English Abitur.
+          Choose between a structured overview, a quiz mode, and an application mode.
+        </p>
+      </div>
+
+      <div class="menu-grid">
+        <div class="card menu-card" onclick="showScreen('overview'); renderOverview();">
+          <h3>Overview</h3>
+          <p>Study all relevant literary devices, their effects, explanations, and examples.</p>
+        </div>
+
+        <div class="card menu-card" onclick="startQuiz()">
+          <h3>Quiz</h3>
+          <p>Recognise the literary device in a sentence and identify its effect.</p>
+        </div>
+
+        <div class="card menu-card" onclick="startApplication()">
+          <h3>Application</h3>
+          <p>Mark literary devices in a generated text and compare your answers to the solution.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="screen">
+      <div class="topbar">
+        <h2>Overview</h2>
+        <div>
+          <input id="searchInput" class="search" placeholder="Search device, effect, explanation..." oninput="renderOverview()" />
+          <button class="btn secondary" onclick="showScreen('home')">Home</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Device</th>
+              <th>Effect</th>
+              <th>Explanation</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody id="overviewBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz" class="screen">
+      <div class="topbar">
+        <h2>Quiz Mode</h2>
+        <div>
+          <button class="btn" onclick="startQuiz()">Restart</button>
+          <button class="btn secondary" onclick="showScreen('home')">Home</button>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <div id="quizProgress" class="progress-bar"></div>
+      </div>
+
+      <div id="quizArea"></div>
+    </section>
+
+    <!-- APPLICATION -->
+    <section id="application" class="screen">
+      <div class="topbar">
+        <h2>Application Mode</h2>
+        <div>
+          <button class="btn" onclick="startApplication()">New Text</button>
+          <button class="btn secondary" onclick="showScreen('home')">Home</button>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <h3>Generated Text</h3>
+          <p class="muted">Choose a device on the right and click the matching text fragments.</p>
+          <div id="appText" class="text-box"></div>
+          <div style="text-align:right; margin-top:14px;">
+            <button id="submitAppBtn" class="btn" onclick="submitApplication()">Submit</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <h3>Colour Key</h3>
+            <div id="palette" class="palette"></div>
+          </div>
+          <div id="appResult" class="card" style="display:none;"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const DEVICES = [
+      {
+        id:"simile",
+        name:"Simile",
+        effect:"Creates vivid imagery through a direct comparison using like or as.",
+        explanation:"A direct comparison between two unlike things using like or as.",
+        example:"Her smile was like the sun.",
+        sentences:[
+          "Her voice was as soft as velvet.",
+          "The news spread like wildfire.",
+          "He stood like a lighthouse in the storm."
+        ],
+        reason:"The comparison makes the image more vivid."
+      },
+      {
+        id:"metaphor",
+        name:"Metaphor",
+        effect:"Makes an idea more powerful through an implicit comparison.",
+        explanation:"A comparison without using like or as.",
+        example:"Time is a thief.",
+        sentences:[
+          "The classroom was a battlefield.",
+          "Hope was a candle in the dark.",
+          "Her mind was a locked door."
+        ],
+        reason:"The direct comparison intensifies meaning."
+      },
+      {
+        id:"alliteration",
+        name:"Alliteration",
+        effect:"Creates rhythm and makes wording memorable.",
+        explanation:"Repetition of initial consonant sounds.",
+        example:"Wild winds whisper in winter.",
+        sentences:[
+          "Bright banners burned below.",
+          "Silent seas shimmered softly.",
+          "Broken branches bent above the bay."
+        ],
+        reason:"The repeated initial sound creates emphasis."
+      },
+      {
+        id:"anaphora",
+        name:"Anaphora",
+        effect:"Builds emphasis through repetition at the beginning.",
+        explanation:"Repetition at the start of clauses or sentences.",
+        example:"We will rise, we will fight, we will endure.",
+        sentences:[
+          "Every day we waited, every day we hoped.",
+          "No one spoke, no one moved, no one laughed.",
+          "This is our time, this is our chance."
+        ],
+        reason:"The repeated beginning strengthens the message."
+      },
+      {
+        id:"personification",
+        name:"Personification",
+        effect:"Makes descriptions vivid by giving human traits to non-human things.",
+        explanation:"Human qualities are given to objects, ideas, or animals.",
+        example:"The wind whispered through the trees.",
+        sentences:[
+          "The moon watched the village.",
+          "Fear knocked at his mind.",
+          "The storm chased the boats ashore."
+        ],
+        reason:"Human traits make the image more vivid."
+      },
+      {
+        id:"hyperbole",
+        name:"Hyperbole",
+        effect:"Emphasises a point through exaggeration.",
+        explanation:"A deliberate overstatement for effect.",
+        example:"I have told you a million times.",
+        sentences:[
+          "The suitcase weighed a ton.",
+          "She waited forever.",
+          "He heard it from a thousand miles away."
+        ],
+        reason:"The exaggeration highlights emotion or intensity."
+      },
+      {
+        id:"irony",
+        name:"Irony",
+        effect:"Creates contrast between expectation and reality.",
+        explanation:"The intended meaning differs from the literal meaning, or events turn out unexpectedly.",
+        example:"The fire station burned down.",
+        sentences:[
+          "The honesty prize went to the cheater.",
+          "He called the storm perfect weather.",
+          "The safest boat was the first to sink."
+        ],
+        reason:"The contrast creates humour or criticism."
+      },
+      {
+        id:"rhetorical-question",
+        name:"Rhetorical Question",
+        effect:"Engages the audience and guides their thinking.",
+        explanation:"A question asked for effect, not for an actual answer.",
+        example:"How could anyone ignore this?",
+        sentences:[
+          "Who would choose silence over freedom?",
+          "Is this the future we want?",
+          "What kind of leader turns away?"
+        ],
+        reason:"The question guides the audience toward an intended answer."
+      },
+      {
+        id:"repetition",
+        name:"Repetition",
+        effect:"Emphasises key ideas and improves memorability.",
+        explanation:"Deliberate reuse of words or structures.",
+        example:"Never again, never again.",
+        sentences:[
+          "Run, run, run before the gates close.",
+          "They wanted change, real change.",
+          "Never again, never again, she said."
+        ],
+        reason:"The repeated wording reinforces the point."
+      },
+      {
+        id:"antithesis",
+        name:"Antithesis",
+        effect:"Highlights contrast between opposing ideas.",
+        explanation:"Opposites are placed close together in a balanced structure.",
+        example:"It was the best of times, it was the worst of times.",
+        sentences:[
+          "He spoke of peace while preparing for war.",
+          "They promised freedom but delivered control.",
+          "She looked calm outside yet chaotic within."
+        ],
+        reason:"The sharp contrast makes the opposition clearer."
+      },
+      {
+        id:"enumeration",
+        name:"Enumeration",
+        effect:"Adds detail and can make an argument seem complete.",
+        explanation:"A list of examples, words, or details.",
+        example:"The room held books, maps, letters, and clocks.",
+        sentences:[
+          "We need courage, patience, discipline, and hope.",
+          "He packed shirts, shoes, notebooks, and snacks.",
+          "The speech praised workers, teachers, doctors, and volunteers."
+        ],
+        reason:"The list creates fullness and detail."
+      },
+      {
+        id:"climax",
+        name:"Climax",
+        effect:"Builds intensity step by step.",
+        explanation:"Ideas are arranged in increasing order of importance or emotional force.",
+        example:"He whispered, he shouted, he roared.",
+        sentences:[
+          "The tension grew from concern to fear to panic.",
+          "We must speak, act, and transform the future.",
+          "She noticed the voice, feared the shadow, and faced the danger."
+        ],
+        reason:"The rising order creates dramatic build-up."
+      },
+      {
+        id:"euphemism",
+        name:"Euphemism",
+        effect:"Softens harsh or uncomfortable statements.",
+        explanation:"A mild expression replaces a blunt one.",
+        example:"He passed away last winter.",
+        sentences:[
+          "The company is reducing its workforce.",
+          "He is between jobs at the moment.",
+          "She said the plan was economical with the truth."
+        ],
+        reason:"The softer phrasing reduces harshness."
+      }
+    ];
+
+    const COLORS = [
+      "#60a5fa","#34d399","#f59e0b","#a78bfa","#f472b6",
+      "#fb7185","#22d3ee","#facc15","#c084fc","#4ade80",
+      "#38bdf8","#fb923c","#94a3b8"
+    ];
+
+    const colorMap = {};
+    DEVICES.forEach((d,i)=> colorMap[d.id] = COLORS[i % COLORS.length]);
+
+    function shuffle(arr){
+      const a = [...arr];
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
+    function showScreen(id){
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    // OVERVIEW
+    function renderOverview(){
+      const q = document.getElementById("searchInput").value.toLowerCase().trim();
+      const rows = DEVICES.filter(d =>
+        (d.name + d.effect + d.explanation + d.example).toLowerCase().includes(q)
+      ).map(d => `
+        <tr>
+          <td><strong>${d.name}</strong></td>
+          <td>${d.effect}</td>
+          <td>${d.explanation}</td>
+          <td><em>${d.example}</em></td>
+        </tr>
+      `).join("");
+
+      document.getElementById("overviewBody").innerHTML =
+        rows || `<tr><td colspan="4">No results found.</td></tr>`;
+    }
+
+    renderOverview();
+
+    // QUIZ
+    let quiz = {};
+
+    function startQuiz(){
+      showScreen("quiz");
+      quiz = {
+        list: shuffle(DEVICES).map(d => ({
+          device: d,
+          sentence: shuffle(d.sentences)[0],
+          deviceOptions: shuffle([
+            d.name,
+            ...shuffle(DEVICES.filter(x => x.id !== d.id).map(x => x.name)).slice(0,3)
+          ]),
+          effectOptions: shuffle([
+            d.effect,
+            ...shuffle(DEVICES.filter(x => x.id !== d.id).map(x => x.effect)).slice(0,3)
+          ]),
+          selectedDevice: null,
+          selectedEffect: null
+        })),
+        index: 0,
+        phase: "device",
+        score: 0,
+        results: []
+      };
+      renderQuiz();
+    }
+
+    function renderQuiz(){
+      const area = document.getElementById("quizArea");
+      const progress = document.getElementById("quizProgress");
+
+      if(quiz.index >= quiz.list.length){
+        const total = quiz.list.length * 2;
+        const wrong = quiz.results.filter(r => !r.deviceCorrect || !r.effectCorrect);
+        const percent = Math.round((quiz.score / total) * 100);
+        progress.style.width = "100%";
+
+        area.innerHTML = `
+          <div class="card">
+            <h3>Quiz Results</h3>
+            <p><strong>Total score:</strong> ${quiz.score} / ${total}</p>
+            <p><strong>Average success:</strong> ${percent}%</p>
+            <h4>Mistakes</h4>
+            ${
+              wrong.length
+              ? wrong.map(r => `
+                <div class="review-item">
+                  <div><strong>Sentence:</strong> <em>${r.sentence}</em></div>
+                  <div><strong>Correct device:</strong> ${r.device.name}</div>
+                  <div><strong>Correct effect:</strong> ${r.device.effect}</div>
+                  <div><strong>Your device answer:</strong> ${r.selectedDevice || "—"}</div>
+                  <div><strong>Your effect answer:</strong> ${r.selectedEffect || "—"}</div>
+                </div>
+              `).join("")
+              : `<div class="review-item">Perfect score. No mistakes.</div>`
+            }
+            <div style="margin-top:14px;">
+              <button class="btn" onclick="startQuiz()">Repeat Quiz</button>
+              <button class="btn secondary" onclick="showScreen('home')">Return to Home</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const item = quiz.list[quiz.index];
+      const question = quiz.phase === "device"
+        ? "Which literary device appears in the sentence?"
+        : "What is the main effect of this device?";
+
+      const options = quiz.phase === "device" ? item.deviceOptions : item.effectOptions;
+      progress.style.width = ((quiz.index / quiz.list.length) * 100) + "%";
+
+      area.innerHTML = `
+        <div class="card">
+          <div class="muted">Task ${quiz.index + 1} of ${quiz.list.length}</div>
+          <h3>${question}</h3>
+          <div class="sentence-box">${item.sentence}</div>
+          <div class="options">
+            ${options.map((opt, i) => `
+              <button class="option" id="opt${i}" onclick="chooseOption(${i})">${opt}</button>
+            `).join("")}
+          </div>
+          <div id="quizFeedback"></div>
+        </div>
+      `;
+    }
+
+    function chooseOption(i){
+      const item = quiz.list[quiz.index];
+      const options = quiz.phase === "device" ? item.deviceOptions : item.effectOptions;
+      const chosen = options[i];
+      let correct;
+
+      if(quiz.phase === "device"){
+        item.selectedDevice = chosen;
+        item.deviceCorrect = chosen === item.device.name;
+        if(item.deviceCorrect) quiz.score++;
+        correct = item.device.name;
+      } else {
+        item.selectedEffect = chosen;
+        item.effectCorrect = chosen === item.device.effect;
+        if(item.effectCorrect) quiz.score++;
+        correct = item.device.effect;
+      }
+
+      options.forEach((opt, idx) => {
+        const btn = document.getElementById("opt" + idx);
+        btn.disabled = true;
+        if(opt === correct) btn.classList.add("correct");
+        if(opt === chosen && opt !== correct) btn.classList.add("wrong");
+      });
+
+      const fb = document.getElementById("quizFeedback");
+
+      if(quiz.phase === "device"){
+        fb.innerHTML = `
+          <div class="feedback">
+            <strong>Correct device:</strong> ${item.device.name}<br>
+            <strong>Reason:</strong> ${item.device.reason}<br><br>
+            <button class="btn" onclick="nextPhase()">Continue to effect question</button>
+          </div>
+        `;
+      } else {
+        fb.innerHTML = `
+          <div class="feedback">
+            <strong>Correct device:</strong> ${item.device.name}<br>
+            <strong>Correct effect:</strong> ${item.device.effect}<br><br>
+            <button class="btn" onclick="nextTask()">Next task</button>
+          </div>
+        `;
+      }
+    }
+
+    function nextPhase(){
+      quiz.phase = "effect";
+      renderQuiz();
+    }
+
+    function nextTask(){
+      quiz.results.push({...quiz.list[quiz.index]});
+      quiz.index++;
+      quiz.phase = "device";
+      renderQuiz();
+    }
+
+    // APPLICATION
+    let app = {};
+
+    function startApplication(){
+      showScreen("application");
+
+      const chosen = shuffle(DEVICES).slice(0,6);
+      const fragments = [];
+
+      function addWords(text, answer=null){
+        text.split(" ").forEach(w => {
+          fragments.push({
+            text: w + " ",
+            answer: answer,
+            user: null
+          });
+        });
+      }
+
+      addWords(shuffle([
+        "In the silent city,",
+        "During the heated debate,",
+        "At the edge of the storm,",
+        "Inside the crowded station,",
+        "On the cold winter evening,"
+      ])[0], null);
+
+      chosen.forEach((d, idx) => {
+        addWords(shuffle(d.sentences)[0].replace(/[.?!]$/,""), d.id);
+
+        if(idx < chosen.length - 1){
+          addWords(shuffle([
+            "meanwhile,",
+            "therefore,",
+            "suddenly,",
+            "in contrast,",
+            "as a result,"
+          ])[0], null);
+        } else {
+          addWords("the message becomes vivid and memorable.", null);
+        }
+      });
+
+      app = {
+        chosen,
+        fragments,
+        active: null,
+        submitted: false
+      };
+
+      renderApplication();
+    }
+
+    function renderApplication(){
+      const palette = document.getElementById("palette");
+      palette.innerHTML = app.chosen.map(d => `
+        <div class="palette-item ${app.active === d.id ? "active" : ""}" onclick="setActiveDevice('${d.id}')">
+          <span class="swatch" style="background:${colorMap[d.id]}"></span>
+          <span>${d.name}</span>
+        </div>
+      `).join("");
+
+      const text = document.getElementById("appText");
+      text.innerHTML = app.fragments.map((f, i) => {
+        const bg = f.user ? colorMap[f.user] : "transparent";
+        return `<span class="frag" data-i="${i}" onclick="toggleFrag(${i})" style="background:${bg}">${f.text}</span>`;
+      }).join("");
+
+      document.getElementById("submitAppBtn").disabled = false;
+      document.getElementById("appResult").style.display = "none";
+    }
+
+    function setActiveDevice(id){
+      app.active = id;
+      renderApplication();
+    }
+
+    function toggleFrag(i){
+      if(app.submitted) return;
+      if(!app.active){
+        alert("Please choose a literary device first.");
+        return;
+      }
+
+      const f = app.fragments[i];
+      f.user = f.user === app.active ? null : app.active;
+      renderApplication();
+    }
+
+    function submitApplication(){
+      app.submitted = true;
+      let total = 0;
+      let correct = 0;
+
+      app.fragments.forEach((f, i) => {
+        const el = document.querySelector('.frag[data-i="' + i + '"]');
+
+        if(f.answer){
+          total++;
+          if(f.user === f.answer){
+            correct++;
+            el.classList.add("mark-correct");
+          } else {
+            el.classList.add("mark-wrong");
+          }
+
+          el.onclick = function(){
+            const d = DEVICES.find(x => x.id === f.answer);
+            document.getElementById("appResult").style.display = "block";
+            document.getElementById("appResult").innerHTML = `
+              <h3>Marking Detail</h3>
+              <p><strong>Correct device:</strong> ${d.name}</p>
+              <p><strong>Short explanation:</strong> ${d.reason}</p>
+              <div>
+                <button class="btn" onclick="startApplication()">Repeat Application</button>
+                <button class="btn secondary" onclick="showScreen('home')">Return to Home</button>
+              </div>
+            `;
+          };
+        } else if(f.user){
+          el.classList.add("mark-wrong");
+          el.onclick = function(){
+            document.getElementById("appResult").style.display = "block";
+            document.getElementById("appResult").innerHTML = `
+              <h3>Marking Detail</h3>
+              <p><strong>Correct answer:</strong> No literary device was intended here.</p>
+              <div>
+                <button class="btn" onclick="startApplication()">Repeat Application</button>
+                <button class="btn secondary" onclick="showScreen('home')">Return to Home</button>
+              </div>
+            `;
+          };
+        }
+      });
+
+      document.getElementById("submitAppBtn").disabled = true;
+
+      document.getElementById("appResult").style.display = "block";
+      document.getElementById("appResult").innerHTML = `
+        <h3>Result</h3>
+        <p><strong>Accuracy:</strong> ${total ? Math.round((correct/total)*100) : 0}%</p>
+        <p><strong>Correct fragments:</strong> ${correct} / ${total}</p>
+        <p class="muted">Click a reviewed marking in the text to see the correct device and explanation.</p>
+        <div>
+          <button class="btn" onclick="startApplication()">Repeat Application</button>
+          <button class="btn secondary" onclick="showScreen('home')">Return to Home</button>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
